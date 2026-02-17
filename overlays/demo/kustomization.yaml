@@ -24,3 +24,7 @@ patches:
   target:
     kind: Job
     name: systolic-pe
+- path: systolic-orchestrator-service-patch.yaml
+  target:
+    kind: Service
+    name: systolic-orchestrator
