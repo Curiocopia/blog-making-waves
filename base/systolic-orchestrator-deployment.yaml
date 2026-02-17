@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: systolic-orchestrator
+  labels:
+    app: systolic-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: systolic-orchestrator
+  template:
+    metadata:
+      labels:
+        app: systolic-orchestrator
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: orchestrator
+          image: YOUR_REGISTRY/systolic-orchestrator:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+
+          env:
+            - name: PE_MODE
+              value: "k8s"
+            - name: PE_JOB_NAME
+              value: "systolic-pe"
+            - name: PE_SVC_NAME
+              value: "systolic-pe"
+            - name: PE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: PE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: PE_API_PORT
+            - name: HTTP_TIMEOUT_S
+              value: "5.0"
+            - name: HTTP_CONCURRENCY
+              value: "32"
+            - name: RUN_TTL_S
+              value: "3600"
+            - name: MAX_RUN_EVENTS
+              value: "5000"
+            - name: SHUTDOWN_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: SHUTDOWN_TOKEN
+            - name: ORCH_N
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: ARRAY_N
+            - name: DEFAULT_TICK_PERIOD_S
+              value: "4"
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 2
+            periodSeconds: 5
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi

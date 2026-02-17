@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: systolic-pe
+  labels:
+    app: systolic-pe
+spec:
+  completions: 9
+  parallelism: 9
+  completionMode: Indexed
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: systolic-pe
+    spec:
+      subdomain: systolic-pe
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 2
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: pe
+          image: YOUR_REGISTRY/systolic-pe:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8000
+
+          env:
+            - name: "N"
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: ARRAY_N
+            - name: TOTAL_CYCLES
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: TOTAL_CYCLES
+            - name: JOB_NAME
+              value: "systolic-pe"
+            - name: SVC_NAME
+              value: "systolic-pe"
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: PE_API_PORT
+            - name: SHUTDOWN_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: making-waves-environment-vars
+                  key: SHUTDOWN_TOKEN
+
+          securityContext:
+            allowPrivilegeEscalation: false
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

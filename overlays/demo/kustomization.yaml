@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: demo
+
+images:
+- name: pe
+  newName: my-registry/systolic-pe
+  newTag: latest
+- name: orchestrator
+  newName: my-registry/systolic-orchestrator
+  newTag: latest
+
+resources:
+- ../../base
+
+configMapGenerator:
+- name: making-waves-environment-vars
+  behavior: replace
+  env: making-waves-demo.env
+
+patches:
+- path: systolic-pe-job-patch.yaml
+  target:
+    kind: Job
+    name: systolic-pe

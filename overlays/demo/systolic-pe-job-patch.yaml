@@ -1,0 +1,9 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: systolic-pe
+  labels:
+    app: systolic-pe
+spec:
+  completions: 16 # Make sure it is set to N^2, where N is the size of the systolic array.
+  parallelism: 16 # identical to completions for a fully parallel job.

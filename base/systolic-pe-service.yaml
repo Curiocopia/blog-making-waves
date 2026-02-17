@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: systolic-pe
+  labels:
+    app: systolic-pe
+spec:
+  clusterIP: None
+  selector:
+    job-name: systolic-pe
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
