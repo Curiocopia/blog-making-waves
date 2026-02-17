@@ -10,11 +10,10 @@ configMapGenerator:
 labels:
   - pairs:
       app: blog-making-waves
-    includeSelectors: true
+    includeSelectors: false
 
 resources:
   - systolic-orchestrator-deployment.yaml
   - systolic-orchestrator-service.yaml
   - systolic-pe-job.yaml
   - systolic-pe-service.yaml
-
