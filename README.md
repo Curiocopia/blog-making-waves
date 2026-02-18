@@ -1,4 +1,4 @@
-# 📦 Finding Roots
+# 📦 Making Waves
 
 This is a visualization of a systolic array $NxN$ that multiplies two $NxN$ square matrices in $3N-2$ steps. Details are described in [Making Waves].
 
