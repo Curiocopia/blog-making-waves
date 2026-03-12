@@ -4,10 +4,10 @@ kind: Kustomization
 namespace: demo
 
 images:
-- name: pe
+- name: YOUR_REGISTRY/systolic-pe
   newName: my-registry/systolic-pe
   newTag: latest
-- name: orchestrator
+- name: YOUR_REGISTRY/systolic-orchestrator
   newName: my-registry/systolic-orchestrator
   newTag: latest
 

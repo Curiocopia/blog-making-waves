@@ -92,10 +92,10 @@ Adjust the parameters as you need. Set `namespace` for all resources and `systol
 namespace: demo
 
 images:
-- name: systolic-pe
+- name: YOUR_REGISTRY/systolic-pe
   newName: my-registry/systolic-pe
   newTag: v1
-- name: systolic-orchestrator
+- name: YOUR_REGISTRY/systolic-orchestrator
   newName: my-registry/systolic-orchestrator
   newTag: v1
 ```
